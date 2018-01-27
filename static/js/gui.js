@@ -22,14 +22,9 @@ var joint_color_highlight = "#ff6666";
 var segment_width         = 10;
 var segment_color         = "#333333";
 
-function add_joint(x, y) {
-    joints.push(
-        new Path.Circle(
-            new Point(new Point(x, y)),
-            joint_radius
-        )
-    );
-    
+/*  */
+function add_joint(point) {
+    joints.push(new Path.Circle(point, joint_radius));
     new_joint_idx = joints.length - 1;
     joints[new_joint_idx].onMouseEnter = function(event) {
         this.fillColor = joint_color_highlight;
@@ -38,13 +33,16 @@ function add_joint(x, y) {
         this.fillColor = joint_color;
     }
     joints[new_joint_idx].fillColor = joint_color;
-    
-    // joints[new_joint_idx].strokeColor = joint_color;
-    // joints[new_joint_idx].strokeWidth = joint_stroke_width;
 }
 
-function remove_joint(x, y) {
-
+/*  */
+function remove_joint(point) {
+    for (var i = 0; i < joints.length; i++) {
+        if (joints[i].contains(point)) {
+            joints[i].remove();
+            joints.splice(i, 1);
+        }
+    }
 }
 
 
@@ -54,34 +52,37 @@ function remove_joint(x, y) {
 
 /* Default joints on start. */
 for (var i = 0; i < 2; i++) {
-    add_joint(canvas.width*Math.random(), canvas.height*Math.random());
+    add_joint(new Point(canvas.width*Math.random(), canvas.height*Math.random()));
 }
 
 
 /* Parse keyboard input for GUI */
-key_attaching_joint = false;
-key_detaching_joint = false;
-key_removing_joint  = false;
+var key_attach          = 'a';
+var key_detach          = 'd';
+var key_remove          = 'r';
+var key_attaching_joint = false;
+var key_detaching_joint = false;
+var key_removing_joint  = false;
 function onKeyDown(event) {
-    if (event.key == 'a') {
+    if (event.key == key_attach) {
         key_attaching_joint = true;
         status("Attach joint");
-    } else if (event.key == 'd') {
+    } else if (event.key == key_detach) {
         key_detaching_joint = true;
         status("Detach joint");
-    } else if (event.key == 'x') {
+    } else if (event.key == key_remove) {
         key_removing_joint = true;
         status("Remove joint");
     }
 }
 function onKeyUp(event) {
-    if (event.key == 'a') {
+    if (event.key == key_attach) {
         key_attaching_joint = false;
         status("");
-    } else if (event.key == 'd') {
+    } else if (event.key == key_detach) {
         key_detaching_joint = false;
         status("");
-    } else if (event.key == 'x') {
+    } else if (event.key == key_remove) {
         key_removing_joint = false;
         status("");
     }
@@ -92,7 +93,7 @@ function onKeyUp(event) {
 /*  */
 function onMouseDown(event) {
     if (key_attaching_joint) {
-        add_joint(event.point.x);
+        add_joint(event.point);
         key_attaching_joint = false;
     }
     if (key_detaching_joint) {
