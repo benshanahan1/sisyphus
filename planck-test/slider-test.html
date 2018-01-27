@@ -1,14 +1,7 @@
-<script src="../static/js/planck.js"></script>
-<script>
-  var world = planck.World();
-
-  window.requestAnimationFrame(function() {
-    // in each frame call world.step(timeStep) with fixed timeStep
-    world.step(1 / 60);
-    // iterate over bodies and fixtures
-    for (var body = world.getBodyList(); body; body = body.getNext()) {
-      for (var fixture = body.getFixtureList(); fixture; fixture = fixture.getNext()) {
-        planck.testbed('SliderCrank', function(testbed) {
+<html><body>
+  <script src="https://cdn.jsdelivr.net/npm/planck-js@0.1/dist/planck-with-testbed.js"></script>
+  <script>
+    planck.testbed('SliderCrank', function(testbed) {
   var pl = planck, Vec2 = pl.Vec2;
   var world = new pl.World(Vec2(0, -10));
 
@@ -87,11 +80,5 @@
 
   return world;
 });
-      }
-    }
-  });
-
-   world.on('remove-fixture', function(fixture) {
-    // remove fixture from ui
-  });
-</script>
+  </script>
+</body></html>

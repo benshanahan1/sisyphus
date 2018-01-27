@@ -17,24 +17,74 @@ window.addEventListener('load', function() {
             showAngleIndicator: false
         }
     });
+
+    var bodyCategory = 0x0001,
+        worldCategory = 0x0002;
     
-    //Add a ball
-    var ball = Matter.Bodies.circle(250, 250, 50, {
-        density: 0.04,
-        friction: 0.01,
-        frictionAir: 0.00001,
-        restitution: 0.8,
-        render: {
-            fillStyle: '#F35e66',
-            strokeStyle: 'black',
-            lineWidth: 1
-        }
+    var boxOptionsA = {
+            label: 'boxA',
+            collisionFilter: {
+                mask: worldCategory 
+            },
+            chamfer: {
+                radius: 10
+            },
+            render: {
+                fillStyle: '#FFFFFF'
+            }
+        };
+
+    var boxOptionsB = {
+            label: 'boxB',
+            collisionFilter: {
+                mask: worldCategory 
+            },
+            chamfer: {
+                radius: 10
+            },
+            render: {
+                fillStyle: '#FFFFFF'
+            }
+        };
+
+    var boxW = 20;
+    var boxH = 100;
+
+    // create two boxes and a ground
+    var boxA = Matter.Bodies.rectangle(200, 200, boxW, boxH, boxOptionsA);
+    var boxB = Matter.Bodies.rectangle(200, 200, boxW, boxH,  boxOptionsB);
+
+    // create the link between the two boxes
+    var link = Matter.Constraint.create({
+            bodyA: boxA,
+            pointA: {
+                x: 0,
+                y: (boxH-boxW)/2
+            },
+            pointB: {
+                x: 0,
+                y: (boxH-boxW)/2
+            },
+            bodyB: boxB,
+            stiffness: 0.6,
+            render: {
+                visible: true,
+                type: 'pin'
+            }
+        });
+
+    dude = Matter.Composite.create({
+        bodies:[boxA, boxB],
+        constraints:[link]
     });
-    Matter.World.add(world, ball);
+    Matter.World.add(world, dude);
     
     //Add a floor
     var floor = Matter.Bodies.rectangle(250, 520, 500, 40, {
         isStatic: true, //An immovable object
+        collisionFilter: {
+            mask: worldCategory 
+        },
         render: {
             visible: false
         }
@@ -52,6 +102,8 @@ window.addEventListener('load', function() {
         }
     });
     Matter.World.add(world, mouseConstraint);
+
+    // mouseConstraint.collisionFilter.mask = worldCategory
     
     //Start the engine
     Matter.Engine.run(engine);
