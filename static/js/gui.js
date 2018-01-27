@@ -26,13 +26,13 @@ var segment_color         = "#333333";
 function add_joint(point) {
     joints.push(new Path.Circle(point, joint_radius));
     new_joint_idx = joints.length - 1;
+    joints[new_joint_idx].fillColor = joint_color;
     joints[new_joint_idx].onMouseEnter = function(event) {
         this.fillColor = joint_color_highlight;
     }
     joints[new_joint_idx].onMouseLeave = function(event) {
         this.fillColor = joint_color;
     }
-    joints[new_joint_idx].fillColor = joint_color;
 }
 
 /*  */
@@ -66,13 +66,13 @@ var key_removing_joint  = false;
 function onKeyDown(event) {
     if (event.key == key_attach) {
         key_attaching_joint = true;
-        status("Attach joint");
+        status("ATTACH joint");
     } else if (event.key == key_detach) {
         key_detaching_joint = true;
-        status("Detach joint");
+        status("DETACH joint");
     } else if (event.key == key_remove) {
         key_removing_joint = true;
-        status("Remove joint");
+        status("REMOVE joint");
     }
 }
 function onKeyUp(event) {
@@ -136,6 +136,10 @@ function onFrame(event) {
     path = new Path.Line(from, to)
     path.strokeColor = segment_color;
     path.strokeWidth = segment_width;
+
+
+    // Attaching a new joint
+    
 }
 
 
